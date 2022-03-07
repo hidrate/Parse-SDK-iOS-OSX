@@ -87,6 +87,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *containingApplicationBundleIdentifier PF_WATCH_UNAVAILABLE;
 
 ///--------------------------------------
+#pragma mark - Enabling Idempotency
+///--------------------------------------
+
+/**
+ Whether or not to enable idempotency on PUT and POST requests.
+
+ The default value is `NO`.
+ */
+@property (nonatomic, assign, getter=isIdempotencyEnabled) BOOL idempotencyEnabled;
+
+///--------------------------------------
 #pragma mark - Network Properties
 ///--------------------------------------
 
@@ -166,6 +177,17 @@ NS_ASSUME_NONNULL_BEGIN
  @warning This property should only be set from inside an extension environment.
  */
 @property (nullable, nonatomic, copy, readonly) NSString *containingApplicationBundleIdentifier;
+
+///--------------------------------------
+#pragma mark - Enabling Idempotency
+///--------------------------------------
+
+/**
+ Whether or not to enable idempotency on PUT and POST requests.
+
+ The default value is `NO`.
+ */
+@property (nonatomic, assign, readonly, getter=isIdempotencyEnabled) BOOL idempotencyEnabled;
 
 ///--------------------------------------
 #pragma mark - Network Properties

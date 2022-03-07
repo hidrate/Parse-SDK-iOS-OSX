@@ -161,10 +161,22 @@
 - (BFTask<NSDictionary *> *)_getURLRequestHeadersAsyncForCommand:(PFRESTCommand *)command {
     return [BFTask taskFromExecutor:[BFExecutor defaultExecutor] withBlock:^id {
         NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+        NSString *requestMethod = command.httpMethod;
         [headers addEntriesFromDictionary:command.additionalRequestHeaders];
         if (command.sessionToken) {
             headers[PFCommandHeaderNameSessionToken] = command.sessionToken;
         }
+        
+        // Check if idempotency is enabled
+        if (Parse._currentManager.configuration.isIdempotencyEnabled) {
+            
+            // Add the `X-Parse-Request-Id` to the header if this is a POST or PUT
+            if ([requestMethod isEqualToString:PFHTTPRequestMethodPOST] ||
+                [requestMethod isEqualToString:PFHTTPRequestMethodPUT]) {
+                headers[PFCommandHeaderNameRequestId] = [[[NSUUID alloc] init] UUIDString];
+            }
+        }
+        
         return [[self.dataSource.installationIdentifierStore getInstallationIdentifierAsync] continueWithSuccessBlock:^id(BFTask <NSString *>*task) {
             headers[PFCommandHeaderNameInstallationId] = task.result;
             return [headers copy];
